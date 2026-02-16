@@ -9,16 +9,20 @@
 body {
     margin: 0;
     background: #111;
+    display: flex;
+    justify-content: center;
 }
 
 #viewer {
     width: 100%;
+    max-width: 900px; /* ← ограничение ширины на ПК */
 }
+
 canvas {
     width: 100% !important;
     height: auto !important;
     display: block;
-    margin: 0 auto 10px auto;
+    margin: 0 auto 20px auto;
 }
 </style>
 </head>
