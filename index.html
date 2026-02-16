@@ -3,27 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF</title>
+<title>PDF Viewer</title>
 
 <style>
-html, body {
+body {
     margin: 0;
-    padding: 0;
-    height: 100%;
+    background: #111;
 }
 
-iframe {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    border: none;
+#viewer {
+    width: 100%;
+}
+canvas {
+    width: 100% !important;
+    height: auto !important;
+    display: block;
+    margin: 0 auto 10px auto;
 }
 </style>
 </head>
 
 <body>
-    <iframe src="ПРАВИЛА.pdf"></iframe>
+
+<div id="viewer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+const url = 'ПРАВИЛА.pdf';
+
+const pdfjsLib = window['pdfjs-dist/build/pdf'];
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+pdfjsLib.getDocument(url).promise.then(function(pdf) {
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+        pdf.getPage(pageNumber).then(function(page) {
+
+            const viewport = page.getViewport({ scale: 1.5 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            document.getElementById('viewer').appendChild(canvas);
+
+            page.render({
+                canvasContext: context,
+                viewport: viewport
+            });
+        });
+    }
+});
+</script>
+
 </body>
 </html>
